@@ -1,36 +1,25 @@
 package user
 
 import (
-	"fmt"
 	"regexp"
 )
 
 type User struct {
-	ID    ID
+	ID    UserID
 	Age   int
 	Name  string
 	Email string
 }
 
-func NewUser(id ID, age int, name, email string) *User {
-	return &User{
-		ID:    id,
-		Age:   age,
-		Name:  name,
-		Email: email,
-	}
+func NewUser(id UserID, age int, name, email string) *User {
+	return &User{ID: id, Age: age, Name: name, Email: email}
 }
 
-type UserID struct {
-	id string
-}
+type UserID string
 
-func (uid *UserID) IsCorrectId(re string) (bool, error) {
-	match, err := regexp.MatchString(re, uid.id)
-	if err != nil {
-		return false, fmt.Errorf("match string err: %w", err)
-	}
-	return match, nil
+func (uid *UserID) IsCorrectID(re *regexp.Regexp) bool {
+	match := re.MatchString(string(*uid))
+	return match
 }
 
 type ID interface {
