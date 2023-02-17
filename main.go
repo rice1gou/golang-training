@@ -1,11 +1,8 @@
 package main
 
 import (
-	"errors"
 	"flag"
 	"fmt"
-	"identity/pkg/user"
-	"os"
 	"regexp"
 )
 
@@ -20,17 +17,14 @@ func main() {
 	flag.Parse()
 
 	re := regexp.MustCompile(`^\d{4}$`)
-	u := user.NewUser(user.UserID(*id), *age, *name, *email)
+	u := NewUser(*id, *age, *name, *email)
 
-	if err := initUser(re, u); err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
-	}
+	initUser(re, u)
 }
 
-func initUser(re *regexp.Regexp, u *user.User) error {
-	if !u.ID.IsCorrectID(re) {
-		return errors.New("invalid identity")
+func initUser(re *regexp.Regexp, u *User) error {
+	if match := re.MatchString(u.ID); !match {
+		return fmt.Errorf("invalid identity")
 	}
 	fmt.Println("New User Created!")
 	fmt.Printf("id: %v, name: %v, age: %v, email: %v\n", u.ID, u.Name, u.Age, u.Email)
