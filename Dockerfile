@@ -2,10 +2,10 @@ FROM golang:1.18 as builder
 
 WORKDIR /go/src
 
-COPY go.mod
+COPY go.mod ./
 RUN go mod download
 
-COPY ./*.go  ./
+COPY ./*.go ./
 
 ARG CGO_ENABLED=0
 ARG GOOS=linux
@@ -13,7 +13,6 @@ ARG GOARCH=amd64
 RUN go build \
     -o /go/bin/main \
     -ldflags '-s -w'
-
 
 FROM scratch as runner
 
