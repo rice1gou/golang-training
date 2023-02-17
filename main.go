@@ -1,5 +1,32 @@
 package main
 
-func main() {
+import (
+	"flag"
+	"fmt"
+	"regexp"
+)
 
+func main() {
+	var (
+		id    = flag.String("id", "0000", "register your identity")
+		age   = flag.Int("age", 0, "register your identity")
+		name  = flag.String("name", "", "register your identity")
+		email = flag.String("email", "", "register your identity")
+	)
+
+	flag.Parse()
+
+	re := regexp.MustCompile(`^\d{4}$`)
+	u := NewUser(*id, *age, *name, *email)
+
+	initUser(re, u)
+}
+
+func initUser(re *regexp.Regexp, u *User) error {
+	if match := re.MatchString(u.ID); !match {
+		return fmt.Errorf("invalid identity")
+	}
+	fmt.Println("New User Created!")
+	fmt.Printf("id: %v, name: %v, age: %v, email: %v\n", u.ID, u.Name, u.Age, u.Email)
+	return nil
 }
