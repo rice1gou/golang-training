@@ -19,7 +19,9 @@ func main() {
 	re := regexp.MustCompile(`^\d{4}$`)
 	u := NewUser(*id, *age, *name, *email)
 
-	initUser(re, u)
+	if err := initUser(re, u); err != nil {
+		fmt.Println(err.Error())
+	}
 }
 
 func initUser(re *regexp.Regexp, u *User) error {
