@@ -1,9 +1,9 @@
 run:
   skip-dirs:
-    - env
+    - envs
   skip-files:
-    - "*.sh"
-    - "*.bat"
+    - ".*\\.sh"
+    - ".*\\.bat"
 
 linters:
   disable-all: true

@@ -4,4 +4,7 @@ cd "$SCRIPT_DIR"
 
 cd ../../
 
-golangci-lint run -c ./golangci.yaml
+GOOS="linux"
+GOARCH="amd64"
+
+golangci-lint run -c ./envs/lint/.golangci.yaml
