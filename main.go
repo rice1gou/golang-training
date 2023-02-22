@@ -3,8 +3,9 @@ package main
 import (
 	"flag"
 	"fmt"
-	"identity/pkg/user"
 	"regexp"
+
+	"github.com/rice1gou/golang-training/user"
 )
 
 func main() {
