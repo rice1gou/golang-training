@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/rice1gou/golang-training/user"
+	"github.com/rice1gou/golang-training/pkg/user"
 )
 
 func main() {
