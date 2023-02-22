@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"identity/pkg/user"
 	"regexp"
 )
 
@@ -17,14 +18,14 @@ func main() {
 	flag.Parse()
 
 	re := regexp.MustCompile(`^\d{4}$`)
-	u := NewUser(*id, *age, *name, *email)
+	u := user.NewUser(*id, *age, *name, *email)
 
 	if err := initUser(re, u); err != nil {
 		fmt.Println(err.Error())
 	}
 }
 
-func initUser(re *regexp.Regexp, u *User) error {
+func initUser(re *regexp.Regexp, u *user.User) error {
 	if match := re.MatchString(u.ID); !match {
 		return fmt.Errorf("invalid identity")
 	}
