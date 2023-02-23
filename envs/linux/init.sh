@@ -2,11 +2,21 @@
 
 cd ~/
 
-# Goバージョン設定
-GO_VERSION=
 
-# Goのインストール（既存のバージョンのGoの削除）
-sudo rm -rf /usr/local/go && tar -C /usr/local -xzf go$GO_VERSION.linux-amd64.tar.gz
+# Goバージョン設定
+NEW_GO_VERSION="1.20"
+
+# 既存のGoの削除
+sudo apt-get purge golang*
+
+# Goのインストール
+wget https://dl.google.com/go/go$NEW_GO_VERSION.linux-amd64.tar.gz
+
+# 権限の変更
+sha256sum go$NEW_GO_VERSION.linux-amd64.tar.gz
+
+# tarファイルの展開
+sudo rm -rf /usr/local/go && tar -C /usr/local -xzf go$NEW_GO_VERSION.linux-amd64.tar.gz
 
 # .tarファイルの消去
 sudo rm -rf go$GO_VERSION.linux-amd64.tar.gz
