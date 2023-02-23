@@ -1,3 +1,3 @@
-module github.com/rice1gou/golsng-training
+module github.com/rice1gou/golang-training
 
 go 1.18
