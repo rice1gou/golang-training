@@ -39,5 +39,7 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "New User Created!")
 	fmt.Fprintf(w, "id: %v, name: %v, age: %v, email: %v\n", u.ID, u.Name, u.Age, u.Email)
 
-	user.InitUser(re, u)
+	if err := user.InitUser(re, u); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+	}
 }
