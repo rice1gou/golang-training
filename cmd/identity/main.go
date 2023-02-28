@@ -11,11 +11,13 @@ import (
 func main() {
 	mux := router.NewRouter()
 	mux.Add(http.MethodGet, "/", handler.IndexHandler)
-	mux.Add(http.MethodPost, "/login", handler.IndexHandler)
-	mux.Add(http.MethodGet, "/logout", handler.IndexHandler)
-	mux.Add(http.MethodGet, "/user", handler.IndexHandler)
-	mux.Add(http.MethodPost, "/user", handler.IndexHandler)
-	mux.Add(http.MethodGet, "/", handler.IndexHandler)
+	mux.Add(http.MethodPost, "/login", handler.LoginHandler)
+	mux.Add(http.MethodGet, "/logout", handler.LogoutHandler)
+	mux.Add(http.MethodGet, "/user", handler.FetchUsersHandler)
+	mux.Add(http.MethodGet, "/user/([^/]+)", handler.FetchUserHandler)
+	mux.Add(http.MethodPost, "/user", handler.RegisterUsersHandler)
+	mux.Add(http.MethodPost, "/user/([^/]+)", handler.RegisterUserHandler)
+	mux.Add(http.MethodDelete, "/user/([^/]+)", handler.DeleteUserHandler)
 
 	err := http.ListenAndServe(":8080", mux)
 	log.Fatal(err)
