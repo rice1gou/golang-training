@@ -60,3 +60,8 @@ func (r *router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Allow", strings.Join(allow, ", "))
 	http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 }
+
+func PathParam(r *http.Request, index int) string {
+	params := r.Context().Value(pathParamCtxKey{}).([]string)
+	return params[index]
+}

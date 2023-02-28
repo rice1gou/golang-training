@@ -15,7 +15,6 @@ func main() {
 	mux.Add(http.MethodGet, "/logout", handler.LogoutHandler)
 	mux.Add(http.MethodGet, "/user", handler.FetchUsersHandler)
 	mux.Add(http.MethodGet, "/user/([^/]+)", handler.FetchUserHandler)
-	mux.Add(http.MethodPost, "/user", handler.RegisterUsersHandler)
 	mux.Add(http.MethodPost, "/user/([^/]+)", handler.RegisterUserHandler)
 	mux.Add(http.MethodDelete, "/user/([^/]+)", handler.DeleteUserHandler)
 
