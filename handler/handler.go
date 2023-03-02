@@ -1,17 +1,22 @@
 package handler
 
-import "net/http"
+import (
+	"fmt"
+	"net/http"
+)
 
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
-
+	fmt.Fprint(w, "top page\n")
+}
+func SigninHandler(w http.ResponseWriter, r *http.Request) {
+	// サインイン処理
+}
+func SignoutHandler(w http.ResponseWriter, r *http.Request) {
+	// サインアウト処理
 	return
 }
-func LoginHandler(w http.ResponseWriter, r *http.Request) {
-	// ログイン処理
-	return
-}
-func LogoutHandler(w http.ResponseWriter, r *http.Request) {
-	// ログアウト処理
+func SignupHandler(w http.ResponseWriter, r *http.Request) {
+	// サインアップ処理
 	return
 }
 func FetchUsersHandler(w http.ResponseWriter, r *http.Request) {
@@ -24,6 +29,10 @@ func FetchUserHandler(w http.ResponseWriter, r *http.Request) {
 }
 func RegisterUserHandler(w http.ResponseWriter, r *http.Request) {
 	// ユーザー登録
+	return
+}
+func ModifyUserHandler(w http.ResponseWriter, r *http.Request) {
+	// ユーザー編集
 	return
 }
 func DeleteUserHandler(w http.ResponseWriter, r *http.Request) {
