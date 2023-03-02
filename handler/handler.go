@@ -22,7 +22,7 @@ func SignupHandler(w http.ResponseWriter, r *http.Request) {
 }
 func FetchUsersHandler(w http.ResponseWriter, r *http.Request) {
 	// ユーザー一覧取得
-	fmt.Fprint(w, "get user list\n")
+	fmt.Fprint(w, "get users list\n")
 }
 func FetchUserHandler(w http.ResponseWriter, r *http.Request) {
 	// ユーザー詳細取得
