@@ -10,31 +10,32 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 }
 func SigninHandler(w http.ResponseWriter, r *http.Request) {
 	// サインイン処理
+	fmt.Fprint(w, "signin\n")
 }
 func SignoutHandler(w http.ResponseWriter, r *http.Request) {
 	// サインアウト処理
-	return
+	fmt.Fprint(w, "signout\n")
 }
 func SignupHandler(w http.ResponseWriter, r *http.Request) {
 	// サインアップ処理
-	return
+	fmt.Fprint(w, "signup\n")
 }
 func FetchUsersHandler(w http.ResponseWriter, r *http.Request) {
 	// ユーザー一覧取得
-	return
+	fmt.Fprint(w, "get user list\n")
 }
 func FetchUserHandler(w http.ResponseWriter, r *http.Request) {
 	// ユーザー詳細取得
-	return
+	fmt.Fprint(w, "get user details\n")
 }
 func RegisterUserHandler(w http.ResponseWriter, r *http.Request) {
 	// ユーザー登録
-	return
+	fmt.Fprint(w, "register user\n")
 }
 func ModifyUserHandler(w http.ResponseWriter, r *http.Request) {
 	// ユーザー編集
-	return
+	fmt.Fprint(w, "modify user\n")
 }
 func DeleteUserHandler(w http.ResponseWriter, r *http.Request) {
-	return
+	fmt.Fprint(w, "delete user\n")
 }
