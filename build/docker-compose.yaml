@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  app:
+    build: ./identity
+    container_name: identity
+    depends_on:
+      - postgres
+    ports:
+      - 20001:80
+    environment:
+      - DB_HOST_NAME=dev-psql-sv
+      - DB_NAME=IdentityDB
+      - DB_PASSWORD=identity
+      - DB_USER_NAME=identity
+    logging:
+      options:
+        max-size: "50m"
+        max-file: "5"
+    restart: always
+
+  postgres:
+    image: postgres
+    container_name: postgres
+    hostname: ${DB_HOST_NAME}
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER_NAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --locale=C
+    volumes:
+      - '${POSTGRES_VOLUME_PATH}:/var/lib/postgresql/data:Z'
+    logging:
+      options:
+        max-size: "50m"
+        max-file: "5"
+    restart: always
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    depends_on:
+      - service_name
+    ports:
+      - 8080:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+

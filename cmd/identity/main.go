@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"log"
+	"os"
 
 	"fmt"
 	"net/http"
@@ -13,11 +14,11 @@ import (
 	"github.com/rice1gou/golang-training/pkg/router"
 )
 
-const (
-	HOST     = ""
-	USER     = ""
-	PASSWORD = ""
-	DATABASE = ""
+var (
+	HOST     = os.Getenv("DB_HOSR_NAME")
+	USER     = os.Getenv("DB_USER_NAME")
+	DATABASE = os.Getenv("DB_NAME")
+	PASSWORD = os.Getenv("DB_PASSWORD")
 )
 
 func main() {
@@ -51,7 +52,7 @@ func run() error {
 	mux.Add(http.MethodPost, "/user/([^/]+)", handler.ModifyUserHandler(db))
 	mux.Add(http.MethodDelete, "/user/([^/]+)", handler.DeleteUserHandler(db))
 
-	err = http.ListenAndServe(":8080", mux);
+	err = http.ListenAndServe(":80", mux);
 	if err != nil {
 		return err
 	}
