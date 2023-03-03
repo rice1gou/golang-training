@@ -28,7 +28,7 @@ func FetchUserHandler(w http.ResponseWriter, r *http.Request) {
 	// ユーザー詳細取得
 	fmt.Fprint(w, "get user details\n")
 }
-func RegisterUserHandler(w http.ResponseWriter, r *http.Request) {
+func SaveUserHandler(w http.ResponseWriter, r *http.Request) {
 	// ユーザー登録
 	fmt.Fprint(w, "register user\n")
 }
