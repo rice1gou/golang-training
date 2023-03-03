@@ -47,7 +47,7 @@ func run() error {
 	mux.Add(http.MethodGet, "/signup", handler.SignupHandler(db))
 	mux.Add(http.MethodGet, "/user", handler.FetchUsersHandler(db))
 	mux.Add(http.MethodPost, "/user", handler.SaveUserHandler(db))
-	mux.Add(http.MethodGet, "/user/([^/]+)", handler.FetchUserHandler(db))
+	mux.Add(http.MethodGet, "/user/([^/]+)", handler.FetchUserDetailsHandler(db))
 	mux.Add(http.MethodPost, "/user/([^/]+)", handler.ModifyUserHandler(db))
 	mux.Add(http.MethodDelete, "/user/([^/]+)", handler.DeleteUserHandler(db))
 
