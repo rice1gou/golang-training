@@ -36,6 +36,7 @@ func FetchUsersHandler(db *sql.DB) http.HandlerFunc{
 	return func(w http.ResponseWriter, r *http.Request) {
 	// ユーザー一覧取得
 	fmt.Fprint(w, "get users list\n")
+
 	}
 }
 

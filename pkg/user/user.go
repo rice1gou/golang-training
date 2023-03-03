@@ -21,7 +21,7 @@ func NewUser(userid, username, password string) *User {
 	return &User{UserOid: uuid, UserId: userid, UserName: username, Password: password}
 }
 
-func createUserTable(db *sql.DB) error {
+func CreateUserTable(db *sql.DB) error {
 	sqlStr := `CREATE TABLE IF NOT EXISTS m_users(
 		useroid  VARCHAR(128),
 		userid VARCHAR(64) NOT NULL,
@@ -35,7 +35,7 @@ func createUserTable(db *sql.DB) error {
 	return nil
 }
 
-func saveUser(db *sql.DB, u User) error {
+func SaveUser(db *sql.DB, u User) error {
 	sqlStr := `INSERT INTO m_users(useroid, userid, username, password) VALUES(?,?,?,?);`
 	_, err := db.Exec(sqlStr, u.UserOid, u.UserId, u.UserName, u.Password)
 	if err != nil {
@@ -44,7 +44,7 @@ func saveUser(db *sql.DB, u User) error {
 	return nil
 }
 
-func fetchUsers(db *sql.DB) ([]*User, error) {
+func FetchUsers(db *sql.DB) ([]*User, error) {
 	sqlStr := `SELECT useroid, userid, username FROM m_users;`
 	rows, err := db.Query(sqlStr)
 	if err != nil {
@@ -64,7 +64,7 @@ func fetchUsers(db *sql.DB) ([]*User, error) {
 	return users, nil
 }
 
-func fetchUserDetails(db *sql.DB, useroid string) (*User, error) {
+func FetchUserDetails(db *sql.DB, useroid string) (*User, error) {
 	sqlStr := `SELECT userid, username FROM m_users WHERE useroid=?;`
 	row := db.QueryRow(sqlStr, useroid)
 	var u User
@@ -75,7 +75,7 @@ func fetchUserDetails(db *sql.DB, useroid string) (*User, error) {
 	return &u, nil
 }
 
-func modifyUser(db *sql.DB, u *User) error {
+func ModifyUser(db *sql.DB, u *User) error {
 	sqlStr := `UPDATE m_users SET userid=?, username=? WHERE useroid=?;`
 	_, err := db.Exec(sqlStr, u.UserId, u.UserName, u.UserOid)
 	if err != nil {
@@ -84,7 +84,7 @@ func modifyUser(db *sql.DB, u *User) error {
 	return nil
 }
 
-func deleteUser(db *sql.DB, useroid string) error {
+func DeleteUser(db *sql.DB, useroid string) error {
 	sqlStr := `DELETE FROM m_users WHERE useroid=?;`
 	_, err := db.Exec(sqlStr, useroid)
 	if err != nil {
