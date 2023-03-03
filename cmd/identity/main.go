@@ -2,9 +2,9 @@ package main
 
 import (
 	"database/sql"
+	"log"
 
 	"fmt"
-	"log"
 	"net/http"
 
 	_ "github.com/lib/pq"
@@ -21,19 +21,10 @@ const (
 )
 
 func main() {
-	mux := router.NewRouter()
-	mux.Add(http.MethodGet, "/", handler.IndexHandler)
-	mux.Add(http.MethodPost, "/signin", handler.SigninHandler)
-	mux.Add(http.MethodGet, "/signout", handler.SignoutHandler)
-	mux.Add(http.MethodGet, "/signup", handler.SignupHandler)
-	mux.Add(http.MethodGet, "/user", handler.FetchUsersHandler)
-	mux.Add(http.MethodPost, "/user", handler.SaveUserHandler)
-	mux.Add(http.MethodGet, "/user/([^/]+)", handler.FetchUserHandler)
-	mux.Add(http.MethodPost, "/user/([^/]+)", handler.ModifyUserHandler)
-	mux.Add(http.MethodDelete, "/user/([^/]+)", handler.DeleteUserHandler)
-
-	err := http.ListenAndServe(":8080", mux)
-	log.Fatal(err)
+	err := run()
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func run() error {
@@ -43,18 +34,26 @@ func run() error {
 	if err != nil {
 		return fmt.Errorf("DB Open: %w", err)
 	}
+
 	err = db.Ping()
 	if err != nil {
 		return err
 	}
-	return nil
-}
 
-func createUserTable(db *sql.DB) error {
-	queryStr := ``
-	_, err := db.Exec(queryStr)
+	mux := router.NewRouter()
+	mux.Add(http.MethodGet, "/", handler.IndexHandler(db))
+	mux.Add(http.MethodPost, "/signin", handler.SigninHandler(db))
+	mux.Add(http.MethodGet, "/signout", handler.SignoutHandler(db))
+	mux.Add(http.MethodGet, "/signup", handler.SignupHandler(db))
+	mux.Add(http.MethodGet, "/user", handler.FetchUsersHandler(db))
+	mux.Add(http.MethodPost, "/user", handler.SaveUserHandler(db))
+	mux.Add(http.MethodGet, "/user/([^/]+)", handler.FetchUserHandler(db))
+	mux.Add(http.MethodPost, "/user/([^/]+)", handler.ModifyUserHandler(db))
+	mux.Add(http.MethodDelete, "/user/([^/]+)", handler.DeleteUserHandler(db))
+
+	err = http.ListenAndServe(":8080", mux);
 	if err != nil {
-		return fmt.Errorf("Create Table: %w", err)
+		return err
 	}
 	return nil
 }
