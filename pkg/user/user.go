@@ -44,20 +44,51 @@ func saveUser(db *sql.DB, u User) error {
 	return nil
 }
 
-func fetchUsers(db *sql.DB) error {
-	sqlStr := `SELECT * FROM m_users;`
-	rows, err := db.
+func fetchUsers(db *sql.DB) ([]*User, error) {
+	sqlStr := `SELECT useroid, userid, username FROM m_users;`
+	rows, err := db.Query(sqlStr)
+	if err != nil {
+		return nil, fmt.Errorf("fetch users: %w", err)
+	}
+	defer rows.Close()
+	var users []*User
+
+	for rows.Next() {
+		var u User
+		err := rows.Scan(&u.UserOid, &u.UserId, &u.UserName)
+		if err != nil {
+			return nil, fmt.Errorf("scan: %w", err)
+		}
+		users = append(users, &u)
+	}
+	return users, nil
+}
+
+func fetchUserDetails(db *sql.DB, useroid string) (*User, error) {
+	sqlStr := `SELECT userid, username FROM m_users WHERE useroid=?;`
+	row := db.QueryRow(sqlStr, useroid)
+	var u User
+	err :=  row.Scan(&u.UserId, &u.UserName)
+	if err != nil {
+		return &User{}, fmt.Errorf("scan: %w", err)
+	}
+	return &u, nil
+}
+
+func modifyUser(db *sql.DB, u *User) error {
+	sqlStr := `UPDATE m_users SET userid=?, username=? WHERE useroid=?;`
+	_, err := db.Exec(sqlStr, u.UserId, u.UserName, u.UserOid)
+	if err != nil {
+		return fmt.Errorf("update: %w", err)
+	}
 	return nil
 }
 
-func fetchUserDetails() error {
-	return nil
-}
-
-func modifyUser() error {
-	return nil
-}
-
-func deleteUser() error {
+func deleteUser(db *sql.DB, useroid string) error {
+	sqlStr := `DELETE FROM m_users WHERE useroid=?;`
+	_, err := db.Exec(sqlStr, useroid)
+	if err != nil {
+		return fmt.Errorf("delete: %w", err)
+	}
 	return nil
 }
