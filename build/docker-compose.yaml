@@ -2,7 +2,9 @@ version: '3.8'
 
 services:
   app:
-    build: ./identity
+    build:
+      context: ../
+      dockerfile: ./build/identity/Dockerfile
     container_name: identity
     depends_on:
       - postgres
@@ -13,6 +15,10 @@ services:
       - DB_NAME=IdentityDB
       - DB_PASSWORD=identity
       - DB_USER_NAME=identity
+    volumes:
+      - ${GO_MOD}:/go/src/go.mod
+      - ../handler:/go/src/handler
+      - ../pkg:/go/src/pkg
     logging:
       options:
         max-size: "50m"
