@@ -2,7 +2,6 @@ FROM golang:1.18 as builder
 
 WORKDIR /go/src
 
-ARG GO_MOD
 COPY $GO_MOD go.sum ./
 RUN go mod download
 

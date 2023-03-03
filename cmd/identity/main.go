@@ -30,7 +30,7 @@ func main() {
 
 func run() error {
 	driverName := "postgres"
-	connectStr := fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=require", HOST, USER, PASSWORD, DATABASE)
+	connectStr := fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable", HOST, USER, PASSWORD, DATABASE)
 	db, err := sql.Open(driverName, connectStr)
 	if err != nil {
 		return fmt.Errorf("DB Open: %w", err)
