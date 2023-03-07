@@ -4,4 +4,9 @@ go 1.18
 
 require github.com/lib/pq v1.10.7
 
-require github.com/google/uuid v1.3.0
+require (
+	github.com/google/uuid v1.3.0
+	go.uber.org/multierr v1.9.0
+)
+
+require go.uber.org/atomic v1.7.0 // indirect
