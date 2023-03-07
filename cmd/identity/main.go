@@ -12,13 +12,14 @@ import (
 
 	"github.com/rice1gou/golang-training/handler"
 	"github.com/rice1gou/golang-training/pkg/router"
+	"github.com/rice1gou/golang-training/pkg/user"
 )
 
 var (
-	HOST     = os.Getenv("DB_HOSR_NAME")
+	HOST     = os.Getenv("DB_HOST_NAME")
 	USER     = os.Getenv("DB_USER_NAME")
-	DATABASE = os.Getenv("DB_NAME")
 	PASSWORD = os.Getenv("DB_PASSWORD")
+	DATABASE = os.Getenv("DB_NAME")
 )
 
 func main() {
@@ -41,6 +42,10 @@ func run() error {
 		return err
 	}
 
+	if err := user.CreateUserTable(db); err != nil {
+		return err
+	}
+
 	mux := router.NewRouter()
 	mux.Add(http.MethodGet, "/", handler.IndexHandler(db))
 	mux.Add(http.MethodPost, "/signin", handler.SigninHandler(db))
@@ -52,7 +57,7 @@ func run() error {
 	mux.Add(http.MethodPost, "/user/([^/]+)", handler.ModifyUserHandler(db))
 	mux.Add(http.MethodDelete, "/user/([^/]+)", handler.DeleteUserHandler(db))
 
-	err = http.ListenAndServe(":80", mux);
+	err = http.ListenAndServe(":80", mux)
 	if err != nil {
 		return err
 	}

@@ -32,11 +32,12 @@ func CreateUserTable(db *sql.DB) error {
 	if err != nil {
 		return err
 	}
+	fmt.Println("Success for Create User Table")
 	return nil
 }
 
 func SaveUser(db *sql.DB, u User) error {
-	sqlStr := `INSERT INTO m_users(useroid, userid, username, password) VALUES(?,?,?,?);`
+	sqlStr := "INSERT INTO m_users(useroid, userid, username, password) VALUES($1,$2,$3,$4);"
 	_, err := db.Exec(sqlStr, u.UserOid, u.UserId, u.UserName, u.Password)
 	if err != nil {
 		return fmt.Errorf("save user: %w", err)
@@ -45,7 +46,7 @@ func SaveUser(db *sql.DB, u User) error {
 }
 
 func FetchUsers(db *sql.DB) ([]*User, error) {
-	sqlStr := `SELECT useroid, userid, username FROM m_users;`
+	sqlStr := "SELECT useroid, userid, username FROM m_users;"
 	rows, err := db.Query(sqlStr)
 	if err != nil {
 		return nil, fmt.Errorf("fetch users: %w", err)
@@ -65,10 +66,10 @@ func FetchUsers(db *sql.DB) ([]*User, error) {
 }
 
 func FetchUserDetails(db *sql.DB, useroid string) (*User, error) {
-	sqlStr := `SELECT userid, username FROM m_users WHERE useroid=?;`
+	sqlStr := "SELECT userid, username FROM m_users WHERE useroid=$1;"
 	row := db.QueryRow(sqlStr, useroid)
 	var u User
-	err :=  row.Scan(&u.UserId, &u.UserName)
+	err := row.Scan(&u.UserId, &u.UserName)
 	if err != nil {
 		return &User{}, fmt.Errorf("scan: %w", err)
 	}
@@ -76,7 +77,7 @@ func FetchUserDetails(db *sql.DB, useroid string) (*User, error) {
 }
 
 func ModifyUser(db *sql.DB, u *User) error {
-	sqlStr := `UPDATE m_users SET userid=?, username=? WHERE useroid=?;`
+	sqlStr := "UPDATE m_users SET userid=?, username=? WHERE useroid=$1;"
 	_, err := db.Exec(sqlStr, u.UserId, u.UserName, u.UserOid)
 	if err != nil {
 		return fmt.Errorf("update: %w", err)
@@ -85,7 +86,7 @@ func ModifyUser(db *sql.DB, u *User) error {
 }
 
 func DeleteUser(db *sql.DB, useroid string) error {
-	sqlStr := `DELETE FROM m_users WHERE useroid=?;`
+	sqlStr := "DELETE FROM m_users WHERE useroid=$1;"
 	_, err := db.Exec(sqlStr, useroid)
 	if err != nil {
 		return fmt.Errorf("delete: %w", err)
