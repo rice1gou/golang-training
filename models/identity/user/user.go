@@ -15,20 +15,37 @@ type User struct {
 	Password string
 }
 
+type userRepository struct {
+	db sql.DB
+}
+
+type UserRepository interface {
+	CreateUserTable() error
+	SaveUser(u *User) error
+	FetchUsers() ([]*User, error)
+	FetchUserDetails(useroid string) (*User, error)
+	ModifyUser(u *User) error
+	DeleteUser(useroid string) error
+}
+
+func NewUserRepository(db *sql.DB) UserRepository {
+	return &userRepository{*db}
+}
+
 func NewUser(userid, username, password string) *User {
 	uuidWithHyphen, _ := uuid.NewRandom()
 	uuid := strings.Replace(uuidWithHyphen.String(), "-", "", -1)
 	return &User{UserOid: uuid, UserId: userid, UserName: username, Password: password}
 }
 
-func CreateUserTable(db *sql.DB) error {
+func (ur *userRepository) CreateUserTable() error {
 	sqlStr := `CREATE TABLE IF NOT EXISTS m_users(
 		useroid  VARCHAR(128),
 		userid VARCHAR(64) NOT NULL,
 		username VARCHAR(16) NOT NULL,
 		password VARCHAR(16) NOT NULL
 	);`
-	_, err := db.Exec(sqlStr)
+	_, err := ur.db.Exec(sqlStr)
 	if err != nil {
 		return err
 	}
@@ -36,18 +53,18 @@ func CreateUserTable(db *sql.DB) error {
 	return nil
 }
 
-func SaveUser(db *sql.DB, u User) error {
+func (ur *userRepository) SaveUser(u *User) error {
 	sqlStr := "INSERT INTO m_users(useroid, userid, username, password) VALUES($1,$2,$3,$4);"
-	_, err := db.Exec(sqlStr, u.UserOid, u.UserId, u.UserName, u.Password)
+	_, err := ur.db.Exec(sqlStr, u.UserOid, u.UserId, u.UserName, u.Password)
 	if err != nil {
 		return fmt.Errorf("save user: %w", err)
 	}
 	return nil
 }
 
-func FetchUsers(db *sql.DB) ([]*User, error) {
+func (ur *userRepository) FetchUsers() ([]*User, error) {
 	sqlStr := "SELECT useroid, userid, username FROM m_users;"
-	rows, err := db.Query(sqlStr)
+	rows, err := ur.db.Query(sqlStr)
 	if err != nil {
 		return nil, fmt.Errorf("fetch users: %w", err)
 	}
@@ -65,9 +82,9 @@ func FetchUsers(db *sql.DB) ([]*User, error) {
 	return users, nil
 }
 
-func FetchUserDetails(db *sql.DB, useroid string) (*User, error) {
+func (ur *userRepository) FetchUserDetails(useroid string) (*User, error) {
 	sqlStr := "SELECT userid, username FROM m_users WHERE useroid=$1;"
-	row := db.QueryRow(sqlStr, useroid)
+	row := ur.db.QueryRow(sqlStr, useroid)
 	var u User
 	err := row.Scan(&u.UserId, &u.UserName)
 	if err != nil {
@@ -76,18 +93,18 @@ func FetchUserDetails(db *sql.DB, useroid string) (*User, error) {
 	return &u, nil
 }
 
-func ModifyUser(db *sql.DB, u *User) error {
+func (ur *userRepository) ModifyUser(u *User) error {
 	sqlStr := "UPDATE m_users SET userid=?, username=? WHERE useroid=$1;"
-	_, err := db.Exec(sqlStr, u.UserId, u.UserName, u.UserOid)
+	_, err := ur.db.Exec(sqlStr, u.UserId, u.UserName, u.UserOid)
 	if err != nil {
 		return fmt.Errorf("update: %w", err)
 	}
 	return nil
 }
 
-func DeleteUser(db *sql.DB, useroid string) error {
+func (ur *userRepository) DeleteUser(useroid string) error {
 	sqlStr := "DELETE FROM m_users WHERE useroid=$1;"
-	_, err := db.Exec(sqlStr, useroid)
+	_, err := ur.db.Exec(sqlStr, useroid)
 	if err != nil {
 		return fmt.Errorf("delete: %w", err)
 	}

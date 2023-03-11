@@ -1,46 +1,45 @@
 package handler
 
 import (
-	"database/sql"
 	"fmt"
 	"net/http"
 
+	"github.com/rice1gou/golang-training/models/identity/user"
 	"github.com/rice1gou/golang-training/pkg/router"
-	"github.com/rice1gou/golang-training/pkg/user"
 )
 
-func IndexHandler(db *sql.DB) http.HandlerFunc {
+func IndexHandler(ur user.UserRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "top page\n")
 	}
 }
 
-func SigninHandler(db *sql.DB) http.HandlerFunc {
+func SigninHandler(ur user.UserRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// サインイン処理
 		fmt.Fprint(w, "signin\n")
 	}
 }
 
-func SignoutHandler(db *sql.DB) http.HandlerFunc {
+func SignoutHandler(ur user.UserRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// サインアウト処理
 		fmt.Fprint(w, "signout\n")
 	}
 }
 
-func SignupHandler(db *sql.DB) http.HandlerFunc {
+func SignupHandler(ur user.UserRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// サインアップ処理
 		fmt.Fprint(w, "signup\n")
 	}
 }
 
-func FetchUsersHandler(db *sql.DB) http.HandlerFunc {
+func FetchUsersHandler(ur user.UserRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// ユーザー一覧取得
 		fmt.Fprint(w, "get users list\n")
-		users, err := user.FetchUsers(db)
+		users, err := ur.FetchUsers()
 		if err != nil {
 			http.Error(w, "users not found", http.StatusInternalServerError)
 		}
@@ -50,12 +49,12 @@ func FetchUsersHandler(db *sql.DB) http.HandlerFunc {
 	}
 }
 
-func FetchUserDetailsHandler(db *sql.DB) http.HandlerFunc {
+func FetchUserDetailsHandler(ur user.UserRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// ユーザー詳細取得
-		fmt.Fprint(w, "get user details\n")
+		fmt.Fprint(w, "get users details\n")
 		oid := router.PathParam(r, 0)
-		u, err := user.FetchUserDetails(db, oid)
+		u, err := ur.FetchUserDetails(oid)
 		if err != nil {
 			http.Error(w, "User Not Exists", http.StatusBadRequest)
 		}
@@ -63,7 +62,7 @@ func FetchUserDetailsHandler(db *sql.DB) http.HandlerFunc {
 	}
 }
 
-func SaveUserHandler(db *sql.DB) http.HandlerFunc {
+func SaveUserHandler(ur user.UserRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// ユーザー登録
 		fmt.Fprint(w, "register user\n")
@@ -76,13 +75,13 @@ func SaveUserHandler(db *sql.DB) http.HandlerFunc {
 		pw := body["password"][0]
 
 		u := user.NewUser(uid, uname, pw)
-		if err := user.SaveUser(db, *u); err != nil {
+		if err := ur.SaveUser(u); err != nil {
 			http.Error(w, "couldn't saved user", http.StatusInternalServerError)
 		}
 	}
 }
 
-func ModifyUserHandler(db *sql.DB) http.HandlerFunc {
+func ModifyUserHandler(ur user.UserRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// ユーザー編集
 		fmt.Fprint(w, "modify user\n")
@@ -95,18 +94,18 @@ func ModifyUserHandler(db *sql.DB) http.HandlerFunc {
 		u.UserId = body["userid"][0]
 		u.UserName = body["username"][0]
 
-		err := user.ModifyUser(db, &u)
+		err := ur.ModifyUser(&u)
 		if err != nil {
 			http.Error(w, "couldn't update user", http.StatusInternalServerError)
 		}
 	}
 }
 
-func DeleteUserHandler(db *sql.DB) http.HandlerFunc {
+func DeleteUserHandler(ur user.UserRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "delete user\n")
 		oid := router.PathParam(r, 0)
-		err := user.DeleteUser(db, oid)
+		err := ur.DeleteUser(oid)
 		if err != nil {
 			http.Error(w, "couldn't delete user", http.StatusInternalServerError)
 		}

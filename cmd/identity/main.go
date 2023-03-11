@@ -10,9 +10,9 @@ import (
 
 	_ "github.com/lib/pq"
 
-	"github.com/rice1gou/golang-training/handler"
+	"github.com/rice1gou/golang-training/cmd/identity/internal/handler"
+	"github.com/rice1gou/golang-training/models/identity/user"
 	"github.com/rice1gou/golang-training/pkg/router"
-	"github.com/rice1gou/golang-training/pkg/user"
 )
 
 var (
@@ -42,20 +42,22 @@ func run() error {
 		return err
 	}
 
-	if err := user.CreateUserTable(db); err != nil {
+	ur := user.NewUserRepository(db)
+
+	if err := ur.CreateUserTable(); err != nil {
 		return err
 	}
 
 	mux := router.NewRouter()
-	mux.Add(http.MethodGet, "/", handler.IndexHandler(db))
-	mux.Add(http.MethodPost, "/signin", handler.SigninHandler(db))
-	mux.Add(http.MethodGet, "/signout", handler.SignoutHandler(db))
-	mux.Add(http.MethodGet, "/signup", handler.SignupHandler(db))
-	mux.Add(http.MethodGet, "/user", handler.FetchUsersHandler(db))
-	mux.Add(http.MethodPost, "/user", handler.SaveUserHandler(db))
-	mux.Add(http.MethodGet, "/user/([^/]+)", handler.FetchUserDetailsHandler(db))
-	mux.Add(http.MethodPost, "/user/([^/]+)", handler.ModifyUserHandler(db))
-	mux.Add(http.MethodDelete, "/user/([^/]+)", handler.DeleteUserHandler(db))
+	mux.Add(http.MethodGet, "/", handler.IndexHandler(ur))
+	mux.Add(http.MethodPost, "/signin", handler.SigninHandler(ur))
+	mux.Add(http.MethodGet, "/signout", handler.SignoutHandler(ur))
+	mux.Add(http.MethodGet, "/signup", handler.SignupHandler(ur))
+	mux.Add(http.MethodGet, "/user", handler.FetchUsersHandler(ur))
+	mux.Add(http.MethodPost, "/user", handler.SaveUserHandler(ur))
+	mux.Add(http.MethodGet, "/user/([^/]+)", handler.FetchUserDetailsHandler(ur))
+	mux.Add(http.MethodPost, "/user/([^/]+)", handler.ModifyUserHandler(ur))
+	mux.Add(http.MethodDelete, "/user/([^/]+)", handler.DeleteUserHandler(ur))
 
 	err = http.ListenAndServe(":80", mux)
 	if err != nil {

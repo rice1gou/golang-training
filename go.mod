@@ -9,4 +9,7 @@ require (
 	go.uber.org/multierr v1.9.0
 )
 
-require go.uber.org/atomic v1.7.0 // indirect
+require (
+	github.com/DATA-DOG/go-sqlmock v1.5.0 // indirect
+	go.uber.org/atomic v1.7.0 // indirect
+)
