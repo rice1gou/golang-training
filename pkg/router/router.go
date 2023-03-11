@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-type router struct {
+type Router struct {
 	routes []route
 }
 
@@ -18,11 +18,11 @@ type route struct {
 	handler   http.HandlerFunc
 }
 
-func NewRouter() *router {
-	return &router{}
+func NewRouter() *Router {
+	return &Router{}
 }
 
-func (r *router) Add(method string, pattern string, handler http.HandlerFunc) *router {
+func (r *Router) Add(method string, pattern string, handler http.HandlerFunc) *Router {
 	newRoute := route{method, regexp.MustCompile("^" + pattern + "$"), nil, handler}
 	r.routes = append(r.routes, newRoute)
 	return r
@@ -30,7 +30,7 @@ func (r *router) Add(method string, pattern string, handler http.HandlerFunc) *r
 
 type pathParamCtxKey struct{}
 
-func isMatchPath(r *router, req *http.Request) []route {
+func isMatchPath(r *Router, req *http.Request) []route {
 	var matches []route
 	for _, route := range r.routes {
 		match := route.path.FindStringSubmatch(req.URL.Path)
@@ -42,7 +42,7 @@ func isMatchPath(r *router, req *http.Request) []route {
 	return matches
 }
 
-func (r *router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+func (r *Router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	var allow []string
 	matches := isMatchPath(r, req)
 	if len(matches) == 0 {

@@ -24,7 +24,7 @@ type UserRepository interface {
 	SaveUser(u *User) error
 	FetchUsers() ([]*User, error)
 	FetchUserDetails(useroid string) (*User, error)
-	ModifyUser(u *User) error
+	ModifyUser(uoid, ui, un string) error
 	DeleteUser(useroid string) error
 }
 
@@ -93,9 +93,9 @@ func (ur *userRepository) FetchUserDetails(useroid string) (*User, error) {
 	return &u, nil
 }
 
-func (ur *userRepository) ModifyUser(u *User) error {
-	sqlStr := "UPDATE m_users SET userid=?, username=? WHERE useroid=$1;"
-	_, err := ur.db.Exec(sqlStr, u.UserId, u.UserName, u.UserOid)
+func (ur *userRepository) ModifyUser(uoid, ui, un string) error {
+	sqlStr := "UPDATE m_users SET userid=$2, username=3 WHERE useroid=$1;"
+	_, err := ur.db.Exec(sqlStr, uoid, ui, un)
 	if err != nil {
 		return fmt.Errorf("update: %w", err)
 	}

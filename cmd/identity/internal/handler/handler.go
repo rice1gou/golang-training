@@ -89,12 +89,11 @@ func ModifyUserHandler(ur user.UserRepository) http.HandlerFunc {
 			http.Error(w, "Form request parse error", http.StatusBadRequest)
 		}
 		body := r.PostForm
-		var u user.User
-		u.UserOid = router.PathParam(r, 0)
-		u.UserId = body["userid"][0]
-		u.UserName = body["username"][0]
+		userOid := router.PathParam(r, 0)
+		userId := body["userid"][0]
+		userName := body["username"][0]
 
-		err := ur.ModifyUser(&u)
+		err := ur.ModifyUser(userOid, userId, userName)
 		if err != nil {
 			http.Error(w, "couldn't update user", http.StatusInternalServerError)
 		}

@@ -23,32 +23,32 @@ var (
 )
 
 func main() {
-	err := run()
+	driverName := "postgres"
+	connectStr := fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable", HOST, USER, PASSWORD, DATABASE)
+	db, err := sql.Open(driverName, connectStr)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = db.Ping()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	ur := user.NewUserRepository(db)
+	if err := ur.CreateUserTable(); err != nil {
+		log.Fatal(err)
+	}
+
+	mux := router.NewRouter()
+
+	err = run(ur, mux)
 	if err != nil {
 		log.Fatal(err)
 	}
 }
 
-func run() error {
-	driverName := "postgres"
-	connectStr := fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable", HOST, USER, PASSWORD, DATABASE)
-	db, err := sql.Open(driverName, connectStr)
-	if err != nil {
-		return fmt.Errorf("DB Open: %w", err)
-	}
-
-	err = db.Ping()
-	if err != nil {
-		return err
-	}
-
-	ur := user.NewUserRepository(db)
-
-	if err := ur.CreateUserTable(); err != nil {
-		return err
-	}
-
-	mux := router.NewRouter()
+func run(ur user.UserRepository, mux *router.Router) error {
 	mux.Add(http.MethodGet, "/", handler.IndexHandler(ur))
 	mux.Add(http.MethodPost, "/signin", handler.SigninHandler(ur))
 	mux.Add(http.MethodGet, "/signout", handler.SignoutHandler(ur))
@@ -59,7 +59,7 @@ func run() error {
 	mux.Add(http.MethodPost, "/user/([^/]+)", handler.ModifyUserHandler(ur))
 	mux.Add(http.MethodDelete, "/user/([^/]+)", handler.DeleteUserHandler(ur))
 
-	err = http.ListenAndServe(":80", mux)
+	err := http.ListenAndServe(":80", mux)
 	if err != nil {
 		return err
 	}
