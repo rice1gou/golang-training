@@ -7,4 +7,4 @@ cd ../../../
 GOOS="linux"
 GOARCH="amd64"
 
-golangci-lint run -c ./configs/.golangci.yaml
+golangci-lint run -c ./scripts/configs/.golangci.yaml
