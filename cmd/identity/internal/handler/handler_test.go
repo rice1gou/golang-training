@@ -1,12 +1,17 @@
 package handler
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
+	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/rice1gou/golang-training/models/identity/user"
+	"github.com/rice1gou/golang-training/pkg/router"
 )
 
 type testUserRepository struct {
@@ -70,7 +75,7 @@ var tur = newTestUserRepository(
 )
 
 func TestFetchUsersHandler(t *testing.T) {
-	req := httptest.NewRequest(http.MethodGet, "/users", nil)
+	req := httptest.NewRequest(http.MethodGet, "/user", nil)
 	got := httptest.NewRecorder()
 
 	type args struct {
@@ -88,6 +93,68 @@ func TestFetchUsersHandler(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			FetchUsersHandler(tt.args.tur)(got, req)
 			fmt.Println(got.Body, got.Code)
+		})
+	}
+}
+
+func TestFetchUserDetailsHandler(t *testing.T) {
+	db, _ := tur.FetchUsers()
+	oid := db[0].UserOid
+
+	req := httptest.NewRequest(http.MethodGet, "/user/"+oid+"/", nil)
+	got := httptest.NewRecorder()
+	ctx := context.WithValue(req.Context(), router.PathParamCtxKey{}, []string{oid})
+
+	type args struct {
+		tur user.UserRepository
+	}
+	tests := []struct {
+		name string
+		args args
+		want int
+	}{
+		// TODO: Add test cases.
+		{"test1", args{tur}, 200},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			FetchUserDetailsHandler(tt.args.tur)(got, req.WithContext(ctx))
+			fmt.Println(got.Body)
+			fmt.Println(got.Header())
+			if !reflect.DeepEqual(got.Code, tt.want) {
+				t.Errorf("FetchUserDetailsHandler() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestSaveUserHandler(t *testing.T) {
+	formData := url.Values{}
+	formData.Set("userid", "test4@email.com")
+	formData.Set("username", "testuser4")
+	formData.Set("password", "password4")
+	reqBody := strings.NewReader(formData.Encode())
+	req := httptest.NewRequest(http.MethodPost, "/user", reqBody)
+	got := httptest.NewRecorder()
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	type args struct {
+		tur user.UserRepository
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantCode int
+	}{
+		// TODO: Add test cases.
+		{"test1", args{tur}, 200},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			SaveUserHandler(tt.args.tur)(got, req)
+			fmt.Println(got.Body)
+			FetchUsersHandler(tt.args.tur)(got, req)
+			fmt.Println(got.Body)
+
 		})
 	}
 }

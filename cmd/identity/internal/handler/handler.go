@@ -44,7 +44,7 @@ func FetchUsersHandler(ur user.UserRepository) http.HandlerFunc {
 			http.Error(w, "users not found", http.StatusInternalServerError)
 		}
 		for _, u := range users {
-			fmt.Fprintf(w, "userid:%s, username:%s\n", u.UserId, u.UserName)
+			fmt.Fprintf(w, "useroid:%s, userid:%s, username:%s\n", u.UserOid, u.UserId, u.UserName)
 		}
 	}
 }
@@ -69,10 +69,10 @@ func SaveUserHandler(ur user.UserRepository) http.HandlerFunc {
 		if err := r.ParseForm(); err != nil {
 			http.Error(w, "Form request parse error", http.StatusBadRequest)
 		}
-		body := r.PostForm
-		uid := body["userid"][0]
-		uname := body["username"][0]
-		pw := body["password"][0]
+		uid := r.Form.Get("userid")
+		uname := r.Form.Get("username")
+		pw := r.Form.Get("password")
+		fmt.Fprintf(w, "userid: %s, username: %s, password: %s", uid, uname, pw)
 
 		u := user.NewUser(uid, uname, pw)
 		if err := ur.SaveUser(u); err != nil {

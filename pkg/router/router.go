@@ -28,7 +28,7 @@ func (r *Router) Add(method string, pattern string, handler http.HandlerFunc) *R
 	return r
 }
 
-type pathParamCtxKey struct{}
+type PathParamCtxKey struct{}
 
 func isMatchPath(r *Router, req *http.Request) []route {
 	var matches []route
@@ -51,7 +51,7 @@ func (r *Router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	}
 	for _, route := range matches {
 		if route.method == req.Method {
-			ctx := context.WithValue(req.Context(), pathParamCtxKey{}, route.pathParam)
+			ctx := context.WithValue(req.Context(), PathParamCtxKey{}, route.pathParam)
 			route.handler(w, req.WithContext(ctx))
 			return
 		}
@@ -62,6 +62,6 @@ func (r *Router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 }
 
 func PathParam(r *http.Request, index int) string {
-	params := r.Context().Value(pathParamCtxKey{}).([]string)
+	params := r.Context().Value(PathParamCtxKey{}).([]string)
 	return params[index]
 }
