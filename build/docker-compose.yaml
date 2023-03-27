@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  identity:
+    build:
+      context: ../
+      dockerfile: ./build/identity/Dockerfile
+    container_name: identity
+    depends_on:
+      - init
+    ports:
+      - 20001:80
+    environment:
+      - DB_HOST_NAME=${DB_HOST_NAME}
+      - DB_USER_NAME=identity
+      - DB_PASSWORD=identity
+      - DB_NAME=identitydb
+    volumes:
+      - ${GO_MOD}:/go/src/go.mod
+      - ../handler:/go/src/handler
+      - ../pkg:/go/src/pkg
+    logging:
+      options:
+        max-size: "50m"
+        max-file: "5"
+    restart: always
+
+  init:
+      build:
+        context: ../
+        dockerfile: ./build/init/Dockerfile
+      container_name: init
+      depends_on:
+        - postgres
+      environment:
+        - DB_HOST_NAME=${DB_HOST_NAME}
+        - DB_USER_NAME=${DB_USER_NAME}
+        - DB_PASSWORD=${DB_PASSWORD}
+        - DB_NAME=${DB_NAME}
+        - IDENTITY_DB_USER_NAME=identity
+        - IDENTITY_DB_PASSWORD=identity
+      volumes:
+        - ${GO_MOD}:/go/src/go.mod
+        - ../pkg:/go/src/pkg
+      logging:
+        options:
+          max-size: "50m"
+          max-file: "5"
+      restart: "no"
+
+  postgres:
+    image: postgres
+    container_name: postgres
+    hostname: ${DB_HOST_NAME}
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=${DB_USER_NAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --locale=C
+    volumes:
+      - '${POSTGRES_VOLUME_PATH}:/var/lib/postgresql/data:Z'
+    logging:
+      options:
+        max-size: "50m"
+        max-file: "5"
+    restart: always
