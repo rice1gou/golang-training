@@ -16,7 +16,7 @@ type User struct {
 }
 
 type userRepository struct {
-	db sql.DB
+	db *sql.DB
 }
 
 type UserRepository interface {
@@ -29,7 +29,7 @@ type UserRepository interface {
 }
 
 func NewUserRepository(db *sql.DB) UserRepository {
-	return &userRepository{*db}
+	return &userRepository{db}
 }
 
 func NewUser(userid, username, password string) *User {
