@@ -16,9 +16,9 @@ services:
       - DB_PASSWORD=identity
       - DB_NAME=identitydb
     volumes:
-      - ${GO_MOD}:/go/src/go.mod
-      - ../handler:/go/src/handler
-      - ../pkg:/go/src/pkg
+      - ../backend/pkg:/go/src/pkg
+      - ../backend/models/identity:/go/src/models/identity
+      - ../backend/cmd/identity/handler:/go/src/cmd/identity/handler
     logging:
       options:
         max-size: "50m"
@@ -29,6 +29,9 @@ services:
       build:
         context: ../
         dockerfile: ./build/init/Dockerfile
+        args:
+          - GO_MOD=${GO_MOD}
+          - MOD_NAME=${MOD_NAME}
       container_name: init
       depends_on:
         - postgres
@@ -40,8 +43,7 @@ services:
         - IDENTITY_DB_USER_NAME=identity
         - IDENTITY_DB_PASSWORD=identity
       volumes:
-        - ${GO_MOD}:/go/src/go.mod
-        - ../pkg:/go/src/pkg
+        - ../backend/pkg:/go/src/pkg
       logging:
         options:
           max-size: "50m"

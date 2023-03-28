@@ -2,10 +2,10 @@ FROM golang:1.18 as builder
 
 WORKDIR /go/src
 
-COPY $GO_MOD go.sum ./
+COPY $GO_MOD backend/go.sum ./
 RUN go mod download
 
-COPY cmd/identity/main.go ./
+COPY backend/cmd/identity/main.go ./
 
 ARG CGO_ENABLED=0
 ARG GOOS=linux

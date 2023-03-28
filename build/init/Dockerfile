@@ -2,10 +2,18 @@ FROM golang:1.18 as builder
 
 WORKDIR /go/src
 
-COPY $GO_MOD go.sum ./
+RUN echo $GO_MOD
+ARG GO_MOD MOD_NAME
+RUN ls
+RUN echo $GO_MOD
+COPY $GO_MOD ./
+COPY backend/go.sum ./
+RUN rename $MOD_NAME go.mod
+RUN pwd
+RUN ls
 RUN go mod download
 
-COPY cmd/init/main.go ./
+COPY backend/cmd/init/main.go ./
 
 ARG CGO_ENABLED=0
 ARG GOOS=linux
