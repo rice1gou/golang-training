@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/rice1gou/golang-training/models/identity/user"
-	"github.com/rice1gou/golang-training/pkg/router"
+	"github.com/rice1gou/golang-training/backend/models/identity/user"
+	"github.com/rice1gou/golang-training/backend/pkg/router"
 )
 
 func IndexHandler(ur user.UserRepository) http.HandlerFunc {

@@ -10,9 +10,9 @@ import (
 
 	_ "github.com/lib/pq"
 
-	"github.com/rice1gou/golang-training/cmd/identity/internal/handler"
-	"github.com/rice1gou/golang-training/models/identity/user"
-	"github.com/rice1gou/golang-training/pkg/router"
+	"github.com/rice1gou/golang-training/backend/cmd/identity/handler"
+	"github.com/rice1gou/golang-training/backend/models/identity/user"
+	"github.com/rice1gou/golang-training/backend/pkg/router"
 )
 
 var (

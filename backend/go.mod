@@ -1,4 +1,4 @@
-module github.com/rice1gou/golang-training
+module github.com/rice1gou/golang-training/backend
 
 go 1.18
 
