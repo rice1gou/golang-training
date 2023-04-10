@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Build Docker image
-        run: docker build -t ghcr.io/rice1gou/identity:${{ github.event.inputs.tag }} ./build/identity
+        run: docker build -t ghcr.io/rice1gou/identity:${{ github.event.inputs.tag }} ./build/identity --build-arg GO_MOD=./backend/go.mod
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v1

@@ -2,7 +2,10 @@ FROM golang:1.18 as builder
 
 WORKDIR /go/src
 
+ARG GO_MOD
+
 COPY $GO_MOD backend/go.sum ./
+
 RUN go mod download
 
 COPY backend/cmd/identity/main.go ./

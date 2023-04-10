@@ -2,15 +2,10 @@ FROM golang:1.18 as builder
 
 WORKDIR /go/src
 
-RUN echo $GO_MOD
-ARG GO_MOD MOD_NAME
-RUN ls
-RUN echo $GO_MOD
-COPY $GO_MOD ./
-COPY backend/go.sum ./
-RUN rename $MOD_NAME go.mod
-RUN pwd
-RUN ls
+ARG GO_MOD
+
+COPY $GO_MOD backend/go.sum ./
+
 RUN go mod download
 
 COPY backend/cmd/init/main.go ./

@@ -4,7 +4,9 @@ services:
   identity:
     build:
       context: ../
-      dockerfile: ./build/identity/Dockerfile
+      dockerfile: ./build/backend/identity/Dockerfile
+      args:
+        - GO_MOD=${GO_MOD}
     container_name: identity
     depends_on:
       - init
@@ -28,10 +30,9 @@ services:
   init:
       build:
         context: ../
-        dockerfile: ./build/init/Dockerfile
+        dockerfile: ./build/backend/init/Dockerfile
         args:
           - GO_MOD=${GO_MOD}
-          - MOD_NAME=${MOD_NAME}
       container_name: init
       depends_on:
         - postgres
